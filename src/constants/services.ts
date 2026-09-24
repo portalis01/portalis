@@ -1,0 +1,487 @@
+import type { ServiceCard, ServiceListItem, ServiceDetail } from "@/types/services";
+
+/** Service cards displayed on the homepage grid */
+export const SERVICE_CARDS: ServiceCard[] = [
+  {
+    id: "design-development",
+    title: "Design Development",
+    image: "/assets/extracted_img_p4_1_336.jpeg",
+  },
+  {
+    id: "turnkey-projects",
+    title: "Turnkey Projects",
+    image: "/assets/extracted_img_p4_2_337.png",
+  },
+  {
+    id: "corporate-interiors",
+    title: "Corporate Interiors",
+    image: "/assets/extracted_img_p4_3_338.jpeg",
+  },
+  {
+    id: "mep-systems",
+    title: "MEP Systems",
+    image: "/assets/extracted_img_p4_6_341.jpeg",
+  },
+  {
+    id: "fb-hospitality",
+    title: "F&B & Hospitality Fit-Outs",
+    image: "/assets/extracted_img_p4_4_339.jpeg",
+  },
+  {
+    id: "retail-wellness",
+    title: "Retail & Wellness Healthcare",
+    image: "/assets/extracted_img_p4_5_340.jpeg",
+  },
+  {
+    id: "joinery-services",
+    title: "Joinery Services",
+    image: "/assets/extracted_img_p4_7_342.jpeg",
+  },
+  {
+    id: "approvals-compliance",
+    title: "Approvals & Compliance",
+    image: "/assets/approvals_compliance.png",
+  },
+];
+
+/** Services listing data for the /services page */
+export const SERVICES_LIST: ServiceListItem[] = [
+  {
+    slug: "design-development",
+    title: "Design Development",
+    tagline: "We provide comprehensive architectural solutions that seamlessly bridge the gap between initial concept development and final detailed design.",
+    image: "/assets/extracted_img_p5_1_351.jpeg",
+    description: "Our design development service translates creative ideas into technically sound design layouts. We deliver precise architectural plans, 3D renderings, and detailed material specifications to ensure seamless fit-out execution.",
+    whatsIncluded: [
+      "Space planning & layout design",
+      "Custom furniture & décor selection",
+      "3D visualization & renders",
+      "Lighting & ambience design",
+      "Material & finish selection",
+      "Project management & coordination",
+    ],
+  },
+  {
+    slug: "turnkey-projects",
+    title: "Turnkey Projects",
+    tagline: "An all-inclusive, end-to-end interior solution engineered to deliver absolute peace of mind — from concept to keys handover.",
+    image: "/assets/extracted_img_p7_1_375.jpeg",
+    description: "We completely own the project lifecycle, seamlessly driving execution from the initial creative concept to the final physical handover. Our team manages all materials, timelines, contractors, and authority compliance certifications.",
+    whatsIncluded: [
+      "End-to-end project management",
+      "Comprehensive material procurement",
+      "In-house construction & fit-out",
+      "Authority approvals & clearances",
+      "Quality & safety audits",
+      "Defects liability warranty coverage",
+    ],
+  },
+  {
+    slug: "corporate-interiors",
+    title: "Corporate Interiors",
+    tagline: "Productivity-driven workspace solutions engineered to maximize operational efficiency, employee wellness, and brand identity.",
+    image: "/assets/extracted_img_p6_1_361.jpeg",
+    description: "We design corporate spaces that blend productivity, acoustic comfort, and clean architectural lines. Our corporate interior projects completely own the lifecycle, driving execution from workspace layouts to full authority approvals.",
+    whatsIncluded: [
+      "Productivity-driven spatial layout",
+      "Acoustic and lighting engineering",
+      "Ergonomic furniture procurement",
+      "Server room & network cabling design",
+      "Full regulatory permit management",
+      "Executive suites & boardrooms setup",
+    ],
+  },
+  {
+    slug: "mep-systems",
+    title: "MEP Systems",
+    tagline: "Ensuring your space performs as beautifully as it looks — from climate control and smart lighting to full authority approvals.",
+    image: "/assets/extracted_img_p8_1_384.jpeg",
+    description: "Our turnkey MEP services flawlessly bridge the gap between stunning design and technical execution. From climate control and smart lighting to authority approvals, we engineer systems that run efficiently and safely.",
+    whatsIncluded: [
+      "Advanced HVAC cooling & ventilation",
+      "Electrical load calculations & DEWA setup",
+      "Fire fighting sprinklers & alarm networks",
+      "Low Voltage (LV) & digital cable systems",
+      "Water plumbing & drainage schematics",
+      "Complete testing & commissioning",
+    ],
+  },
+  {
+    slug: "fb-hospitality",
+    title: "F&B & Hospitality Fit-Outs",
+    tagline: "We create captivating restobar interiors that blend mood, music, and mixology into unforgettable experiences.",
+    image: "/assets/extracted_img_p9_1_393.jpeg",
+    description: "From concept to completion, we craft spaces that feel alive — sophisticated, inviting, and uniquely yours. Balancing immersive experiential design with rigorous commercial functionality.",
+    whatsIncluded: [
+      "Space planning & layout design",
+      "Custom furniture & décor selection",
+      "Bar counter & backbar joinery",
+      "Lighting & ambience design",
+      "Acoustic planning",
+      "Project management & coordination",
+    ],
+  },
+  {
+    slug: "retail-wellness",
+    title: "Retail & Wellness Healthcare",
+    tagline: "High-impact, fully compliant environments designed to maximize foot traffic and client comfort.",
+    image: "/assets/extracted_img_p10_1_403.jpeg",
+    description: "We craft retail stores, spas, wellness salons, and clinical spaces engineered to elevate the customer journey with storefront visual impact, product staging, and relaxing spa environments.",
+    whatsIncluded: [
+      "Experiential retail visual design",
+      "Holistic spa & wellness layouts",
+      "Specialized lighting & HVAC controls",
+      "Custom storefront & shelving joinery",
+      "Mall management permit coordination",
+      "Advanced utility connections design",
+    ],
+  },
+  {
+    slug: "joinery-services",
+    title: "Joinery Services",
+    tagline: "Bespoke woodwork and architectural fixtures manufactured in our advanced in-house facility in Ajman, UAE.",
+    image: "/assets/extracted_img_p11_1_411.jpeg",
+    description: "An end-to-end interior joinery solution delivering absolute peace of mind. Powered by our advanced, in-house manufacturing facility, we craft bespoke woodwork, wall paneling, and luxury furniture with structural precision.",
+    whatsIncluded: [
+      "Advanced site laser scans",
+      "Detailed joinery shop drawings",
+      "In-house wood & veneer manufacturing",
+      "Architectural wall paneling & cladding",
+      "Bespoke tables, desks & wardrobes",
+      "On-site fitting & alignment",
+    ],
+  },
+  {
+    slug: "approvals-compliance",
+    title: "Approvals & Compliance",
+    tagline: "Clearing Dubai's legal, technical, and regulatory landscapes for on-time openings with zero compliance risk.",
+    image: "/assets/extracted_img_p12_1_420.jpeg",
+    description: "We manage the entire legal, technical, and regulatory landscape, clearing all bureaucracy to ensure your project stays perfectly legal, code-compliant, and on track for an on-time opening.",
+    whatsIncluded: [
+      "Turnkey authority NOC management",
+      "Dubai Municipality drawings submission",
+      "Dubai Civil Defense approvals & signs",
+      "Trakhees / DDA fit-out permits",
+      "DEWA load clearances & meter hookups",
+      "Developer NOC (Emaar, Nakheel, etc.)",
+    ],
+  },
+];
+
+/** Detailed service data for /services/[slug] pages */
+export const SERVICES_DETAILS: Record<string, ServiceDetail> = {
+  "design-development": {
+    title: "Design\nDevelopment",
+    tagline:
+      "We provide comprehensive architectural solutions that seamlessly bridge the gap between initial concept development and final detailed design, supported by precise technical drawings and meticulous material selection.",
+    image: "/assets/extracted_img_p5_1_351.jpeg",
+    gallery: [
+      "/assets/extracted_img_p4_1_336.jpeg",
+      "/assets/extracted_img_p13_6_936.jpeg",
+      "/assets/extracted_img_p5_1_351.jpeg",
+      "/assets/extracted_img_p3_1_322.jpeg",
+    ],
+    description:
+      "We provide comprehensive architectural solutions that seamlessly bridge the gap between initial concept development and final detailed design, supported by precise technical drawings and meticulous material selection.",
+    pillars: [
+      { icon: "compass", label: "Concept to\nCompletion" },
+      { icon: "settings", label: "Functional &\nComfortable" },
+      { icon: "gem", label: "Timeless\nAesthetics" },
+      { icon: "layers", label: "End-to-End\nManagement" },
+    ],
+    process: [
+      { step: "01", title: "Consultation", desc: "We listen to your vision, understand your brand, and define your goals." },
+      { step: "02", title: "Concept & Design", desc: "We create mood boards, layouts, and 3D concepts that bring your vision to life." },
+      { step: "03", title: "Planning & Detailing", desc: "Detailed drawings, material schedules, and specifications are finalized." },
+      { step: "04", title: "Execution", desc: "Our team manages every detail to deliver a flawless fit-out with precision." },
+      { step: "05", title: "Final Styling", desc: "We add the perfect finishing touches to make your space truly unforgettable." },
+    ],
+    whatsIncluded: [
+      "Space planning & layout design",
+      "Custom furniture & décor selection",
+      "3D visualization & renders",
+      "Lighting & ambience design",
+      "Material & finish selection",
+      "Acoustic planning",
+      "Project management & coordination",
+      "Final styling & accessorizing",
+    ],
+    ctaHeadline: "Ready to Transform Your Space?",
+    ctaDescription: "Let's create a space that elevates your brand and keeps your guests coming back.",
+  },
+  "turnkey-projects": {
+    title: "Turnkey\nProjects",
+    tagline:
+      "An all-inclusive, end-to-end interior solution engineered to deliver absolute peace of mind — from concept to keys handover.",
+    image: "/assets/extracted_img_p7_1_375.jpeg",
+    gallery: [
+      "/assets/extracted_img_p4_2_337.png",
+      "/assets/extracted_img_p14_3_956.jpeg",
+      "/assets/extracted_img_p7_1_375.jpeg",
+      "/assets/extracted_img_p42_2_387.jpeg",
+    ],
+    description:
+      "We completely own the project lifecycle, seamlessly driving execution from the initial creative concept to the final physical handover. Our team manages all materials, timelines, contractors, and certifications.",
+    pillars: [
+      { icon: "compass", label: "Complete\nOwnership" },
+      { icon: "settings", label: "Budget\nControl" },
+      { icon: "gem", label: "Quality\nAssured" },
+      { icon: "layers", label: "On-Time\nDelivery" },
+    ],
+    process: [
+      { step: "01", title: "Project Onboarding", desc: "Defining budget caps, material preferences, and target handover schedules." },
+      { step: "02", title: "Procurement Setup", desc: "Sourcing luxury materials, custom fittings, and loose furniture from quality vendors." },
+      { step: "03", title: "Authority Management", desc: "Obtaining all necessary fit-out permits and NOC certificates from master developers." },
+      { step: "04", title: "Fit-out Construction", desc: "Supervising site installation, MEP routing, custom joinery, and layout fit-out." },
+      { step: "05", title: "Final Certification", desc: "Inspecting all safety measures to secure municipal compliance and keys handover." },
+    ],
+    whatsIncluded: [
+      "End-to-end project management",
+      "Comprehensive material procurement",
+      "In-house construction & fit-out",
+      "Authority approvals & certifications",
+      "Quality & safety audits (ISO standards)",
+      "Bespoke furniture staging",
+      "Defects liability warranty coverage",
+      "Final handover documentation",
+    ],
+    ctaHeadline: "Ready to Start Your Turnkey Project?",
+    ctaDescription: "Connect with us for a seamless, worry-free interior transformation.",
+  },
+  "corporate-interiors": {
+    title: "Corporate\nInteriors",
+    tagline:
+      "Productivity-driven workspace solutions engineered to maximize operational efficiency, employee wellness, and brand identity.",
+    image: "/assets/extracted_img_p6_1_361.jpeg",
+    gallery: [
+      "/assets/extracted_img_p4_3_338.jpeg",
+      "/assets/extracted_img_p41_1_379.jpeg",
+      "/assets/extracted_img_p6_1_361.jpeg",
+    ],
+    description:
+      "We design corporate spaces that blend productivity, acoustic comfort, and clean architectural lines. Our corporate interior projects completely own the lifecycle, driving execution from workspace layouts to full authority approvals.",
+    pillars: [
+      { icon: "compass", label: "Workspace\nStrategy" },
+      { icon: "settings", label: "Acoustic\nComfort" },
+      { icon: "gem", label: "Brand\nIdentity" },
+      { icon: "layers", label: "Regulatory\nCompliance" },
+    ],
+    process: [
+      { step: "01", title: "Workspace Audit", desc: "Evaluating staff workflows, seating capacities, and meeting room layouts." },
+      { step: "02", title: "Acoustic & Light Plan", desc: "Designing lighting configurations and sound-dampening structures." },
+      { step: "03", title: "Furniture Specification", desc: "Sourcing ergonomic chairs, modular workstations, and executive desks." },
+      { step: "04", title: "Fit-out Construction", desc: "Executing partitions, ceiling details, cable routing, and server room MEPs." },
+      { step: "05", title: "Regulatory Checkoff", desc: "Managing DEWA load approvals and civil defense fire audits." },
+    ],
+    whatsIncluded: [
+      "Productivity-driven spatial layout",
+      "Acoustic and lighting engineering",
+      "Ergonomic furniture procurement",
+      "Server room & network cabling design",
+      "Full regulatory permit management",
+      "Executive suites & boardrooms setup",
+      "Corporate brand styling & signage",
+      "Post-handover support",
+    ],
+    ctaHeadline: "Ready to Elevate Your Workspace?",
+    ctaDescription: "Let's create a workspace that inspires productivity and reflects your brand.",
+  },
+  "mep-systems": {
+    title: "MEP\nSystems",
+    tagline:
+      "Ensuring your space performs as beautifully as it looks — from climate control and smart lighting to full authority approvals.",
+    image: "/assets/extracted_img_p8_1_384.jpeg",
+    gallery: [
+      "/assets/extracted_img_p4_6_341.jpeg",
+      "/assets/extracted_img_p12_1_420.jpeg",
+      "/assets/extracted_img_p8_1_384.jpeg",
+      "/assets/extracted_img_p12_1_126.jpeg",
+    ],
+    description:
+      "Our turnkey MEP services flawlessly bridge the gap between stunning design and technical execution. From climate control and smart lighting to authority approvals, we engineer systems that run efficiently and safely.",
+    pillars: [
+      { icon: "compass", label: "Climate\nControl" },
+      { icon: "settings", label: "Smart\nLighting" },
+      { icon: "gem", label: "Fire\nSafety" },
+      { icon: "layers", label: "Energy\nEfficiency" },
+    ],
+    process: [
+      { step: "01", title: "Load Calculations", desc: "Evaluating electrical capacity, HVAC requirements, and plumbing loads." },
+      { step: "02", title: "System Engineering", desc: "Designing fire fighting networks, LV infrastructures, and water supplies." },
+      { step: "03", title: "Municipal Approvals", desc: "Submitting mechanical drawings to Dubai Municipality and DEWA." },
+      { step: "04", title: "On-site Installation", desc: "Routing ducts, wiring, fire sprinklers, and plumbing channels on site." },
+      { step: "05", title: "Safety Testing", desc: "Performing pressure tests, circuit balancing, and air-flow calibrations." },
+    ],
+    whatsIncluded: [
+      "Advanced HVAC cooling & ventilation",
+      "Electrical load calculations & DEWA setup",
+      "Fire fighting sprinklers & alarm networks",
+      "Low Voltage (LV) & digital cable systems",
+      "Water plumbing & drainage schematics",
+      "Clean emergency lighting infrastructures",
+      "Energy-efficiency system engineering",
+      "Complete testing & commissioning",
+    ],
+    ctaHeadline: "Ready for Flawless MEP Engineering?",
+    ctaDescription: "Connect with our certified engineers to discuss your project's technical requirements.",
+  },
+  "fb-hospitality": {
+    title: "F&B & Hospitality\nFit-Outs",
+    tagline:
+      "We create captivating restobar interiors that blend mood, music, and mixology into unforgettable experiences.",
+    image: "/assets/extracted_img_p9_1_393.jpeg",
+    gallery: [
+      "/assets/extracted_img_p20_1_182.jpeg",
+      "/assets/extracted_img_p23_1_203.jpeg",
+      "/assets/extracted_img_p14_6_965.jpeg",
+      "/assets/extracted_img_p16_6_1019.jpeg",
+    ],
+    description:
+      "From concept to completion, we craft spaces that feel alive — sophisticated, inviting, and uniquely yours. Balancing immersive experiential design with rigorous commercial functionality.",
+    pillars: [
+      { icon: "compass", label: "Concept to\nCompletion" },
+      { icon: "settings", label: "Functional &\nComfortable" },
+      { icon: "gem", label: "Timeless\nAesthetics" },
+      { icon: "layers", label: "End-to-End\nManagement" },
+    ],
+    process: [
+      { step: "01", title: "Consultation", desc: "We listen to your vision, understand your brand, and define your goals." },
+      { step: "02", title: "Concept & Design", desc: "We create mood boards, layouts, and 3D concepts that bring your vision to life." },
+      { step: "03", title: "Planning & Detailing", desc: "Detailed drawings, material schedules, and specifications are finalized." },
+      { step: "04", title: "Execution", desc: "Our team manages every detail to deliver a flawless fit-out with precision." },
+      { step: "05", title: "Final Styling", desc: "We add the perfect finishing touches to make your restobar truly unforgettable." },
+    ],
+    whatsIncluded: [
+      "Space planning & layout design",
+      "Custom furniture & décor selection",
+      "Bar counter & backbar joinery",
+      "Lighting & ambience design",
+      "Material & finish selection",
+      "Acoustic planning",
+      "Project management & coordination",
+      "Final styling & accessorizing",
+    ],
+    ctaHeadline: "Ready to Transform Your Restobar?",
+    ctaDescription: "Let's create a space that elevates your brand and keeps your guests coming back.",
+  },
+  "retail-wellness": {
+    title: "Retail & Wellness\nHealthcare",
+    tagline:
+      "High-impact, fully compliant environments designed to maximize foot traffic and client comfort.",
+    image: "/assets/extracted_img_p10_1_403.jpeg",
+    gallery: [
+      "/assets/extracted_img_p4_5_340.jpeg",
+      "/assets/extracted_img_p26_1_224.jpeg",
+      "/assets/extracted_img_p10_1_403.jpeg",
+      "/assets/extracted_img_p13_4_930.jpeg",
+    ],
+    description:
+      "We craft retail stores, spas, wellness salons, and clinical spaces engineered to elevate the customer journey with storefront visual impact, product staging, and relaxing spa environments.",
+    pillars: [
+      { icon: "compass", label: "Customer\nJourney" },
+      { icon: "settings", label: "Visual\nImpact" },
+      { icon: "gem", label: "Wellness\nFocused" },
+      { icon: "layers", label: "DHA\nCompliant" },
+    ],
+    process: [
+      { step: "01", title: "Customer Flow Mapping", desc: "Designing entryways, visual focal points, and checkout counters." },
+      { step: "02", title: "Ambient Curation", desc: "Integrating soft lighting, sensory scents, and sound-dampening structures." },
+      { step: "03", title: "Bespoke Display Builds", desc: "Fabricating custom shelving, garment racks, and cosmetic display units." },
+      { step: "04", title: "Environmental Controls", desc: "Managing specialized ventilation, water lines, and utility connections." },
+      { step: "05", title: "Mall / Developer NOC", desc: "Coordinating permits with major retail mall managements." },
+    ],
+    whatsIncluded: [
+      "Experiential retail visual design",
+      "Holistic spa & wellness layouts",
+      "Specialized lighting & HVAC controls",
+      "Custom storefront & shelving joinery",
+      "Mall management permit coordination",
+      "Advanced utility connections design",
+      "High-spec finish material procurement",
+      "Post-opening support",
+    ],
+    ctaHeadline: "Ready to Elevate Your Retail Space?",
+    ctaDescription: "Let's create an environment that drives traffic and delights customers.",
+  },
+  "joinery-services": {
+    title: "Joinery\nServices",
+    tagline:
+      "Bespoke woodwork and architectural fixtures manufactured in our advanced in-house facility in Ajman, UAE.",
+    image: "/assets/extracted_img_p11_1_411.jpeg",
+    gallery: [
+      "/assets/extracted_img_p4_7_342.jpeg",
+      "/assets/extracted_img_p16_3_1010.jpeg",
+      "/assets/extracted_img_p11_1_411.jpeg",
+      "/assets/extracted_img_p17_2_1029.jpeg",
+    ],
+    description:
+      "An end-to-end interior joinery solution delivering absolute peace of mind. Powered by our advanced, in-house manufacturing facility, we craft bespoke woodwork, wall paneling, and luxury furniture with structural precision.",
+    pillars: [
+      { icon: "compass", label: "Precision\nCrafted" },
+      { icon: "settings", label: "In-House\nFactory" },
+      { icon: "gem", label: "Premium\nFinishes" },
+      { icon: "layers", label: "On-Site\nInstallation" },
+    ],
+    process: [
+      { step: "01", title: "Site Laser Scan", desc: "Taking precise structural dimensions on-site to eliminate gaps." },
+      { step: "02", title: "Shop Drawings", desc: "Developing detailed woodwork fabrication drafts with veneer and hardware specs." },
+      { step: "03", title: "In-House Factory Build", desc: "Cutting, veneering, lacquering, and assembling wood sections in our workshop." },
+      { step: "04", title: "Lacquering & Finishing", desc: "Applying highly durable polyurethanes, varnishes, and custom polishes." },
+      { step: "05", title: "Precision Fitting", desc: "On-site installation and hardware alignment overseen by joinery engineers." },
+    ],
+    whatsIncluded: [
+      "Advanced site laser scans",
+      "Detailed joinery shop drawings",
+      "In-house wood & veneer manufacturing",
+      "Architectural wall paneling & cladding",
+      "Bespoke tables, desks & wardrobes",
+      "Premium hardware & soft-close spec",
+      "Factory-controlled lacquering & paint",
+      "On-site fitting & alignment",
+    ],
+    ctaHeadline: "Ready for Bespoke Joinery?",
+    ctaDescription: "Let's craft custom woodwork that elevates your interior to the next level.",
+  },
+  "approvals-compliance": {
+    title: "Approvals &\nCompliance",
+    tagline:
+      "Clearing Dubai's legal, technical, and regulatory landscapes for on-time openings with zero compliance risk.",
+    image: "/assets/extracted_img_p12_1_420.jpeg",
+    gallery: [
+      "/assets/approvals_compliance.png",
+      "/assets/extracted_img_p13_5_933.jpeg",
+      "/assets/extracted_img_p12_1_420.jpeg",
+      "/assets/extracted_img_p3_1_322.jpeg",
+    ],
+    description:
+      "We manage the entire legal, technical, and regulatory landscape, clearing all bureaucracy to ensure your project stays perfectly legal, code-compliant, and on track for an on-time opening.",
+    pillars: [
+      { icon: "compass", label: "Municipality\nDrawings" },
+      { icon: "settings", label: "Civil Defense\nApprovals" },
+      { icon: "gem", label: "DEWA\nClearances" },
+      { icon: "layers", label: "Developer\nNOCs" },
+    ],
+    process: [
+      { step: "01", title: "Technical Drawing Audit", desc: "Checking fit-out layouts against DM, Civil Defense, and developer guidelines." },
+      { step: "02", title: "Submissions & NOCs", desc: "Drafting and uploading plans to authority portals (Municipality, DDA, Trakhees)." },
+      { step: "03", title: "Fire Safety Sign-off", desc: "Securing Civil Defense approvals for fire sprinklers and emergency systems." },
+      { step: "04", title: "Utility Approvals", desc: "Coordinating electrical loads and plumbing connections with DEWA." },
+      { step: "05", title: "Final Inspection Clear", desc: "Managing site inspector walkthroughs for final conformity certificates." },
+    ],
+    whatsIncluded: [
+      "Turnkey authority NOC management",
+      "Dubai Municipality drawings submission",
+      "Dubai Civil Defense approvals & signs",
+      "Trakhees / DDA freezone fit-out permits",
+      "DEWA load clearances & meter hookups",
+      "Developer NOC (Emaar, Nakheel, etc.)",
+      "Final occupancy & sign-off handovers",
+      "Ongoing compliance advisory",
+    ],
+    ctaHeadline: "Need Fast Authority Approvals?",
+    ctaDescription: "Let us handle the regulatory complexity so you can focus on your business.",
+  },
+};
+
+/** All valid service slugs for static params generation */
+export const SERVICE_SLUGS = Object.keys(SERVICES_DETAILS);
