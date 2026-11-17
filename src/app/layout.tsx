@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Playfair_Display, Montserrat } from "next/font/google";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import "./globals.css";
 import LenisProvider from "@/components/LenisProvider";
 import WhatsAppButton from "@/components/ui/WhatsAppButton";
@@ -18,6 +19,7 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://portalis.ae"),
   title: "Portalis Interiors LLC | Luxury Interior Design Dubai",
   description:
     "Portalis Interiors LLC creates refined, luxury residential and commercial interiors in Dubai. Timeless spaces, designed for life. Experiencing premium fit-out and turnkey services.",
@@ -56,6 +58,7 @@ export default function RootLayout({
           <WhatsAppButton />
         </LenisProvider>
       </body>
+      <GoogleAnalytics gaId="G-32HZ02ZN3M" />
     </html>
   );
 }
