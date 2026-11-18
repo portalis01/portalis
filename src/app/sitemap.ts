@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { SERVICE_SLUGS } from "@/constants/services";
+import { getAllProjectSlugs } from "@/lib/projects";
 import { client } from "@/sanity/lib/client";
 
 const SITE_URL = "https://portalis.ae";
@@ -13,9 +14,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${SITE_URL}/`, lastModified: now, priority: 1 },
     { url: `${SITE_URL}/about`, lastModified: now, priority: 0.8 },
     { url: `${SITE_URL}/services`, lastModified: now, priority: 0.9 },
+    { url: `${SITE_URL}/projects`, lastModified: now, priority: 0.9 },
     { url: `${SITE_URL}/blog`, lastModified: now, priority: 0.7 },
     ...SERVICE_SLUGS.map((slug) => ({
       url: `${SITE_URL}/services/${slug}`,
+      lastModified: now,
+      priority: 0.8,
+    })),
+    ...getAllProjectSlugs().map((slug) => ({
+      url: `${SITE_URL}/projects/${slug}`,
       lastModified: now,
       priority: 0.8,
     })),

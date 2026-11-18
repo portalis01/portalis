@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -45,6 +46,45 @@ export async function generateStaticParams() {
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
+
+/* ───────────────────────── SEO ───────────────────────── */
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { slug } = await params;
+
+  try {
+    const meta = await client.fetch(
+      `*[_type == "post" && slug.current == $slug][0] {
+        title,
+        "image": mainImage.asset->url,
+        "text": pt::text(body)
+      }`,
+      { slug }
+    );
+    if (!meta?.title) return {};
+
+    // Description = first ~155 characters of the article
+    const plain = (meta.text || "").replace(/\s+/g, " ").trim();
+    const description =
+      plain.length > 155 ? `${plain.slice(0, 152).trimEnd()}...` : plain || undefined;
+
+    return {
+      title: { absolute: `${meta.title} | Portalis Interiors` },
+      description,
+      alternates: { canonical: `/blog/${slug}` },
+      openGraph: {
+        type: "article",
+        title: meta.title,
+        description,
+        images: meta.image ? [meta.image] : undefined,
+      },
+    };
+  } catch {
+    return {};
+  }
+}
+
+/* ───────────────────────── Page ───────────────────────── */
 
 export default async function BlogArticlePage({ params }: PageProps) {
   const { slug } = await params;
@@ -138,7 +178,7 @@ export default async function BlogArticlePage({ params }: PageProps) {
 
       <main className="min-h-screen bg-light-cream text-charcoal-black font-body pt-28 pb-20">
         <article className="max-w-4xl mx-auto px-6">
-          
+
           {/* Back button */}
           <div className="mb-8">
             <Link
@@ -167,7 +207,7 @@ export default async function BlogArticlePage({ params }: PageProps) {
               </span>
               <span>By {post.author.name}</span>
             </div>
-            
+
             <div className="flex items-center gap-1.5">
               <Calendar size={13} className="text-warm-gold" />
               <span>Published on {post.publishedAt}</span>
@@ -197,7 +237,7 @@ export default async function BlogArticlePage({ params }: PageProps) {
               <h3 className="font-heading text-2xl sm:text-3xl text-forest-green mb-8">
                 Related Articles
               </h3>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 {relatedPosts.map((item) => (
                   <div
@@ -225,13 +265,13 @@ export default async function BlogArticlePage({ params }: PageProps) {
                       <span className="text-[9px] text-charcoal-black/50 font-medium block">
                         {item.publishedAt}
                       </span>
-                      
+
                       <Link href={`/blog/${item.slug}`} className="flex-1">
                         <h4 className="font-heading text-base text-forest-green leading-snug group-hover:text-warm-gold transition-colors duration-300 line-clamp-2">
                           {item.title}
                         </h4>
                       </Link>
-                      
+
                       <Link
                         href={`/blog/${item.slug}`}
                         className="inline-flex items-center gap-1 text-[9px] uppercase tracking-[0.2em] font-semibold text-warm-gold group-hover:text-forest-green transition-colors duration-300 pt-2 border-t border-forest-green/5 w-fit"

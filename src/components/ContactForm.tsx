@@ -1,7 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { Send, PhoneCall, Mail } from "lucide-react";
+import { Send, MessageCircle, Mail } from "lucide-react";
+
+const fieldClass =
+  "w-full rounded-md bg-light-cream/60 border border-forest-green/20 text-charcoal-black text-[15px] px-4 py-3 outline-none transition-colors duration-200 placeholder:text-charcoal-black/40 focus:border-forest-green focus:bg-white focus:ring-2 focus:ring-forest-green/10";
+
+const labelClass = "text-[13px] font-semibold text-forest-green";
 
 export default function ContactForm() {
   const [formData, setFormData] = useState({
@@ -16,6 +21,7 @@ export default function ContactForm() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    if (status === "error") setStatus("idle");
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -32,8 +38,8 @@ export default function ContactForm() {
     const encodedBody = encodeURIComponent(bodyText);
 
     if (submitType === "whatsapp") {
-      const phoneNumber = "+971555222074";
-      const whatsappUrl = `https://wa.me/${phoneNumber.replace(/[^0-9+]/g, "")}?text=${encodedBody}`;
+      // wa.me needs digits only (no +, spaces or dashes)
+      const whatsappUrl = `https://wa.me/971555222074?text=${encodedBody}`;
       window.open(whatsappUrl, "_blank");
     } else {
       const mailtoUrl = `mailto:info@portalis.ae?subject=${subject}&body=${encodedBody}`;
@@ -43,67 +49,72 @@ export default function ContactForm() {
     setTimeout(() => {
       setFormData({ name: "", email: "", phone: "", message: "" });
       setStatus("idle");
-    }, 2000);
+    }, 4000);
   };
 
+  const toggleOption = (active: boolean) =>
+    `flex-1 sm:flex-none flex items-center justify-center gap-2 rounded-full px-4 py-1.5 text-[13px] font-semibold cursor-pointer transition-colors duration-200 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-forest-green/40 ${
+      active ? "bg-forest-green text-white" : "text-forest-green hover:bg-forest-green/5"
+    }`;
+
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col space-y-6 w-full max-w-lg">
-      <div className="flex flex-col md:flex-row gap-4">
-        {/* Name Input */}
-        <div className="flex-1 flex flex-col space-y-2">
-          <label htmlFor="name" className="text-white/85 text-[10px] uppercase tracking-[0.2em] font-medium">
-            Your Name *
+    <form onSubmit={handleSubmit} className="flex flex-col gap-5 w-full" noValidate>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        {/* Name */}
+        <div className="flex flex-col gap-2">
+          <label htmlFor="name" className={labelClass}>
+            Your name <span className="text-warm-gold">*</span>
           </label>
           <input
             type="text"
             id="name"
             name="name"
             required
+            autoComplete="name"
             value={formData.name}
             onChange={handleChange}
-            placeholder="John Doe"
-            className="bg-teal-green/20 border border-warm-gold/20 focus:border-warm-gold text-white text-sm px-4 py-3 outline-none transition-all duration-300 font-normal placeholder-white/20"
+            className={fieldClass}
           />
         </div>
 
-        {/* Phone Input */}
-        <div className="flex-1 flex flex-col space-y-2">
-          <label htmlFor="phone" className="text-white/85 text-[10px] uppercase tracking-[0.2em] font-medium">
-            Phone Number
+        {/* Phone */}
+        <div className="flex flex-col gap-2">
+          <label htmlFor="phone" className={labelClass}>
+            Phone number
           </label>
           <input
             type="tel"
             id="phone"
             name="phone"
+            autoComplete="tel"
             value={formData.phone}
             onChange={handleChange}
-            placeholder="+971 50 000 0000"
-            className="bg-teal-green/20 border border-warm-gold/20 focus:border-warm-gold text-white text-sm px-4 py-3 outline-none transition-all duration-300 font-normal placeholder-white/20"
+            className={fieldClass}
           />
         </div>
       </div>
 
-      {/* Email Input */}
-      <div className="flex flex-col space-y-2">
-        <label htmlFor="email" className="text-white/85 text-[10px] uppercase tracking-[0.2em] font-medium">
-          Email Address *
+      {/* Email */}
+      <div className="flex flex-col gap-2">
+        <label htmlFor="email" className={labelClass}>
+          Email address <span className="text-warm-gold">*</span>
         </label>
         <input
           type="email"
           id="email"
           name="email"
           required
+          autoComplete="email"
           value={formData.email}
           onChange={handleChange}
-          placeholder="hello@example.com"
-          className="bg-teal-green/20 border border-warm-gold/20 focus:border-warm-gold text-white text-sm px-4 py-3 outline-none transition-all duration-300 font-normal placeholder-white/20 w-full"
+          className={fieldClass}
         />
       </div>
 
-      {/* Message Input */}
-      <div className="flex flex-col space-y-2">
-        <label htmlFor="message" className="text-white/85 text-[10px] uppercase tracking-[0.2em] font-medium">
-          Your Message *
+      {/* Message */}
+      <div className="flex flex-col gap-2">
+        <label htmlFor="message" className={labelClass}>
+          Your message <span className="text-warm-gold">*</span>
         </label>
         <textarea
           id="message"
@@ -112,55 +123,66 @@ export default function ContactForm() {
           rows={5}
           value={formData.message}
           onChange={handleChange}
-          placeholder="Tell us about your dream interior project..."
-          className="bg-teal-green/20 border border-warm-gold/20 focus:border-warm-gold text-white text-sm px-4 py-3 outline-none transition-all duration-300 font-normal resize-none placeholder-white/20 w-full"
+          placeholder="Tell us about your space: type, location and when you'd like to open."
+          className={`${fieldClass} resize-none`}
         />
       </div>
 
-      {/* Submission Method Selection */}
-      <div className="flex items-center space-x-6 py-2">
-        <span className="text-white/85 text-[10px] uppercase tracking-[0.2em] font-medium">Submit Via:</span>
-        <label className="flex items-center space-x-2 text-white text-xs cursor-pointer select-none">
-          <input
-            type="radio"
-            name="submitType"
-            checked={submitType === "whatsapp"}
-            onChange={() => setSubmitType("whatsapp")}
-            className="accent-warm-gold"
-          />
-          <span className="flex items-center gap-1 font-normal"><PhoneCall size={12} className="text-warm-gold" /> WhatsApp</span>
-        </label>
-        <label className="flex items-center space-x-2 text-white text-xs cursor-pointer select-none">
-          <input
-            type="radio"
-            name="submitType"
-            checked={submitType === "email"}
-            onChange={() => setSubmitType("email")}
-            className="accent-warm-gold"
-          />
-          <span className="flex items-center gap-1 font-normal"><Mail size={12} className="text-warm-gold" /> Email Draft</span>
-        </label>
+      {/* Send via + Send button on one row (stacked on phones) */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-2">
+        <fieldset className="flex items-center gap-3">
+          <legend className="sr-only">Send via</legend>
+          <span aria-hidden="true" className={labelClass}>Send via</span>
+          <div className="inline-flex rounded-full border border-forest-green/20 p-1 bg-light-cream/60">
+            <label className={toggleOption(submitType === "whatsapp")}>
+              <input
+                type="radio"
+                name="submitType"
+                value="whatsapp"
+                checked={submitType === "whatsapp"}
+                onChange={() => setSubmitType("whatsapp")}
+                className="sr-only"
+              />
+              <MessageCircle size={14} /> WhatsApp
+            </label>
+            <label className={toggleOption(submitType === "email")}>
+              <input
+                type="radio"
+                name="submitType"
+                value="email"
+                checked={submitType === "email"}
+                onChange={() => setSubmitType("email")}
+                className="sr-only"
+              />
+              <Mail size={14} /> Email
+            </label>
+          </div>
+        </fieldset>
+
+        <button
+          type="submit"
+          className="self-start sm:self-auto rounded-full bg-warm-gold hover:bg-forest-green hover:text-white text-forest-green text-[11px] uppercase tracking-[0.18em] font-semibold py-3 px-7 transition-colors duration-300 inline-flex items-center justify-center gap-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest-green"
+        >
+          <Send size={13} />
+          {submitType === "whatsapp" ? "Send on WhatsApp" : "Send by email"}
+        </button>
       </div>
 
-      {/* Submit Button */}
-      <button
-        type="submit"
-        className="circle-reveal-btn bg-warm-gold hover:bg-white text-forest-green text-xs uppercase tracking-[0.25em] py-4 px-8 font-semibold transition-all duration-300 w-full flex items-center justify-center gap-2"
-      >
-        <Send size={14} /> Send Message
-      </button>
-
-      {/* Status Indicators */}
-      {status === "success" && (
-        <p className="text-warm-gold text-xs tracking-wider text-center animate-pulse">
-          Opening submission window. Thank you!
-        </p>
-      )}
-      {status === "error" && (
-        <p className="text-red-400 text-xs tracking-wider text-center">
-          Please fill in all required fields marked with *.
-        </p>
-      )}
+      {/* Status messages */}
+      <div aria-live="polite" className="min-h-[1.25rem]">
+        {status === "success" && (
+          <p className="text-forest-green text-sm">
+            {submitType === "whatsapp"
+              ? "WhatsApp is opening with your message. Press send there to reach us."
+              : "Your email app is opening with your message. Press send there to reach us."}
+          </p>
+        )}
+        {status === "error" && (
+          <p className="text-red-700 text-sm">
+            Please fill in your name, email and message.
+          </p>
+        )}
+      </div>
     </form>
   );
 }

@@ -18,18 +18,32 @@ const montserrat = Montserrat({
   display: "swap",
 });
 
+const SITE_URL = "https://portalis.ae";
+const SHARE_IMAGE = "/projects/labrioche-waters-edge/DSC_0007.webp";
+
 export const metadata: Metadata = {
-  metadataBase: new URL("https://portalis.ae"),
-  title: "Portalis Interiors LLC | Luxury Interior Design Dubai",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "Interior Fit-Out Company in UAE | Portalis Interiors",
+    template: "%s | Portalis Interiors",
+  },
   description:
-    "Portalis Interiors LLC creates refined, luxury residential and commercial interiors in Dubai. Timeless spaces, designed for life. Experiencing premium fit-out and turnkey services.",
-  keywords: [
-    "interior design dubai",
-    "luxury interior design",
-    "fit out approval dubai",
-    "restobar interior design",
-    "portalis interiors",
-  ],
+    "Portalis Interiors is an interior fit-out company based in Ajman, UAE. Design, approvals, MEP and joinery for restaurants, cafés, retail and offices.",
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    siteName: "Portalis Interiors",
+    locale: "en_AE",
+    url: SITE_URL,
+    title: "Interior Fit-Out Company in UAE | Portalis Interiors",
+    description:
+      "Design, approvals, MEP and joinery for restaurants, cafés, retail and offices across the UAE.",
+    images: [{ url: SHARE_IMAGE, width: 2400, height: 1547, alt: "La Brioche at Water's Edge, fitted out by Portalis Interiors" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    images: [SHARE_IMAGE],
+  },
   icons: {
     icon: [
       { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
@@ -40,6 +54,33 @@ export const metadata: Metadata = {
     ],
   },
   manifest: "/site.webmanifest",
+};
+
+/* Business details for Google (local search & Maps) */
+const businessSchema = {
+  "@context": "https://schema.org",
+  "@type": "GeneralContractor",
+  name: "Portalis Interiors LLC",
+  url: SITE_URL,
+  logo: `${SITE_URL}/apple-touch-icon.png`,
+  image: `${SITE_URL}${SHARE_IMAGE}`,
+  email: "info@portalis.ae",
+  telephone: "+971555222074",
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: "Industrial Area 2",
+    addressLocality: "Ajman",
+    addressCountry: "AE",
+  },
+  areaServed: { "@type": "Country", name: "United Arab Emirates" },
+  openingHoursSpecification: [
+    {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+      opens: "08:00",
+      closes: "18:00",
+    },
+  ],
 };
 
 export default function RootLayout({
@@ -53,6 +94,10 @@ export default function RootLayout({
       className={`${playfair.variable} ${montserrat.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-light-cream text-charcoal-black">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(businessSchema) }}
+        />
         <LenisProvider>
           {children}
           <WhatsAppButton />

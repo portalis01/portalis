@@ -1,50 +1,29 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Lenis from "lenis";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-// Register ScrollTrigger plugin with GSAP
-gsap.registerPlugin(ScrollTrigger);
+import "lenis/dist/lenis.css";
 
 export default function LenisProvider({ children }: { children: React.ReactNode }) {
-  const lenisRef = useRef<Lenis | null>(null);
   const pathname = usePathname();
   const isStudio = pathname?.startsWith("/studio");
 
   useEffect(() => {
     if (isStudio) return;
 
-    // Initialize Lenis Smooth Scroll
+    // Respect "Reduce motion" — keep normal browser scrolling
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
     const lenis = new Lenis({
-      duration: 1.2,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      orientation: "vertical",
-      gestureOrientation: "vertical",
-      smoothWheel: true,
-      wheelMultiplier: 1,
-      touchMultiplier: 1.5,
+      lerp: 0.1,            // smooth but not floaty
+      smoothWheel: true,    // smooth mouse wheel / trackpad on desktop
+      syncTouch: false,     // phones & tablets keep their own native scrolling
+      anchors: { offset: -80 }, // #links glide to sections, clear of the fixed menu
+      autoRaf: true,        // Lenis runs its own frame loop — no GSAP needed
     });
 
-    lenisRef.current = lenis;
-
-    // Connect Lenis to GSAP ScrollTrigger
-    lenis.on("scroll", ScrollTrigger.update);
-
-    // Sync GSAP ticker with Lenis frame loop
-    const updateRaf = (time: number) => {
-      lenis.raf(time * 1000);
-    };
-    
-    gsap.ticker.add(updateRaf);
-    gsap.ticker.lagSmoothing(0);
-
-    return () => {
-      lenis.destroy();
-      gsap.ticker.remove(updateRaf);
-    };
+    return () => lenis.destroy();
   }, [isStudio]);
 
   return <>{children}</>;

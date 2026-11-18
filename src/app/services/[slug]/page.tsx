@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -42,6 +43,26 @@ const processIcons = [
 
 export async function generateStaticParams() {
   return SERVICE_SLUGS.map((slug) => ({ slug }));
+}
+
+/* ───────────────────────── SEO ───────────────────────── */
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const detail = SERVICES_DETAILS[slug];
+  if (!detail) return {};
+
+  const name = detail.title.replace(/\n/g, " ");
+  return {
+    title: { absolute: `${name} in Dubai & UAE | Portalis Interiors` },
+    description: detail.tagline,
+    alternates: { canonical: `/services/${slug}` },
+    openGraph: {
+      title: `${name} in Dubai & UAE | Portalis Interiors`,
+      description: detail.tagline,
+      images: [detail.image],
+    },
+  };
 }
 
 /* ───────────────────────── Page ───────────────────────── */
@@ -197,7 +218,7 @@ export default async function ServicePage({ params }: PageProps) {
             {/* Left: Title */}
             <div className="lg:col-span-4">
               <h2 className="font-heading text-3xl sm:text-4xl text-forest-green leading-tight">
-                What's Included
+                What&apos;s Included
               </h2>
               <div className="h-[2px] w-10 bg-warm-gold/60 mt-4" />
             </div>
@@ -215,8 +236,6 @@ export default async function ServicePage({ params }: PageProps) {
             </div>
           </div>
         </section>
-
-
 
         {/* ════════════════════════════════════════════════════════
             SECTION 5 — CTA BANNER (Full Width)
