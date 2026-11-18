@@ -5,27 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c47532cc-f2f5-4aa6-aa09-f8766e7056fa" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/portalis.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/portalis.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/about/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/about/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/blog/[slug]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/blog/[slug]/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/layout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/services/[slug]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/services/[slug]/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/services/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/services/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/sitemap.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/sitemap.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ContactForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ContactForm.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/LenisProvider.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/LenisProvider.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/sections/about/AboutCoreValuesSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/sections/about/AboutCoreValuesSection.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/sections/about/AboutCtaSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/sections/about/AboutCtaSection.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/sections/about/AboutHeroSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/sections/about/AboutHeroSection.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/sections/about/ExperienceSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/sections/about/ExperienceSection.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/blog/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/blog/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/globals.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/globals.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/sections/home/AboutSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/sections/home/AboutSection.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/sections/home/ContactSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/sections/home/ContactSection.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/sections/home/GallerySection.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/sections/home/HeroSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/sections/home/HeroSection.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/sections/home/PortfolioSection.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/sections/home/ServicesGridSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/sections/home/ServicesGridSection.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/constants/navigation.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/constants/navigation.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/sections/home/Projects.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/sections/home/Projects.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sanity/env.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/sanity/env.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -134,7 +120,7 @@
       <updated>1794902941044</updated>
       <workItem from="1794902942209" duration="2491000" />
       <workItem from="1794919465404" duration="6577000" />
-      <workItem from="1794980795384" duration="7400000" />
+      <workItem from="1794980795384" duration="15784000" />
     </task>
     <servers />
   </component>

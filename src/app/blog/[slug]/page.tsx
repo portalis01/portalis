@@ -2,52 +2,87 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ChevronLeft, Calendar, User, ArrowRight } from "lucide-react";
+import { PortableText } from "next-sanity";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { client } from "@/sanity/lib/client";
-import { PortableText } from "next-sanity";
 import { urlFor } from "@/sanity/lib/image";
-import type { BlogPost } from "@/types/blog";
+import PostCard, { PostMeta } from "@/components/blog/PostCard";
+import {
+  FALLBACK_IMAGE,
+  POST_SUMMARY_FIELDS,
+  slugify,
+  type PostSummary,
+} from "@/lib/blog";
+
+export const revalidate = 300;
+
+const SITE_URL = "https://portalis.ae";
+const WHATSAPP_NUMBER = "971555222074";
+
+/* ───────── Types & helpers ───────── */
+
+type Block = {
+  _type: string;
+  _key?: string;
+  style?: string;
+  children?: { text?: string }[];
+};
+
+type Post = PostSummary & {
+  body: Block[] | null;
+  authorName: string | null;
+  updatedAt: string | null;
+};
+
+const blockText = (block: Block) =>
+  (block.children ?? []).map((c) => c.text ?? "").join("");
 
 const portableTextComponents = {
   types: {
     image: ({ value }: { value: any }) => {
       if (!value?.asset) return null;
       return (
-        <div className="relative w-full aspect-[16/9] my-8 rounded-[16px] overflow-hidden border border-warm-gold/15 shadow-sm">
+        <figure className="relative w-full aspect-[16/9] my-10 overflow-hidden rounded-md bg-forest-green/5">
           <Image
             src={urlFor(value).url()}
-            alt={value.alt || "Blog Image"}
+            alt={value.alt || ""}
             fill
+            sizes="(max-width: 1024px) 100vw, 720px"
             className="object-cover"
           />
-        </div>
+        </figure>
       );
     },
   },
+  block: {
+    h2: ({ children, value }: { children?: React.ReactNode; value: Block }) => (
+      <h2 id={slugify(blockText(value))} className="scroll-mt-28">
+        {children}
+      </h2>
+    ),
+  },
 };
 
-/* ───────────────────────── Static Params ───────────────────────── */
+/* ───────── Static params ───────── */
 
 export async function generateStaticParams() {
-  let sanitySlugs: any[] = [];
   try {
-    const posts = await client.fetch(`*[_type == "post"] { "slug": slug.current }`);
-    sanitySlugs = posts.map((post: any) => ({ slug: post.slug }));
+    const posts = await client.fetch(
+      `*[_type == "post" && defined(slug.current)] { "slug": slug.current }`
+    );
+    return posts.map((post: { slug: string }) => ({ slug: post.slug }));
   } catch (err) {
     console.error("Error fetching static params slugs from Sanity:", err);
+    return [];
   }
-  return sanitySlugs;
 }
-
-/* ───────────────────────── Page Props ───────────────────────── */
 
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
-/* ───────────────────────── SEO ───────────────────────── */
+/* ───────── SEO ───────── */
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
@@ -63,7 +98,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     );
     if (!meta?.title) return {};
 
-    // Description = first ~155 characters of the article
     const plain = (meta.text || "").replace(/\s+/g, " ").trim();
     const description =
       plain.length > 155 ? `${plain.slice(0, 152).trimEnd()}...` : plain || undefined;
@@ -84,208 +118,240 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 }
 
-/* ───────────────────────── Page ───────────────────────── */
+/* ───────── Page ───────── */
 
 export default async function BlogArticlePage({ params }: PageProps) {
   const { slug } = await params;
 
-  let post: BlogPost | null = null;
-
-  // 1. Try to fetch from Sanity (fresh data)
+  let post: Post | null = null;
   try {
-    const sanityPost = await client.withConfig({ useCdn: false }).fetch(
+    post = await client.fetch(
       `*[_type == "post" && slug.current == $slug][0] {
-        title,
-        "slug": slug.current,
-        "image": mainImage.asset->url,
-        "category": categories[0]->title,
-        "author": {
-          "name": author->name,
-          "image": author->image.asset->url
-        },
-        publishedAt,
-        body
+        ${POST_SUMMARY_FIELDS},
+        body,
+        "authorName": author->name,
+        "updatedAt": _updatedAt
       }`,
       { slug }
     );
-
-    if (sanityPost) {
-      post = {
-        title: sanityPost.title,
-        slug: sanityPost.slug,
-        image: sanityPost.image || "/assets/blog_fallback.png",
-        category: sanityPost.category || "General",
-        author: {
-          name: sanityPost.author?.name || "Portalis Team",
-          image: sanityPost.author?.image || "/assets/extracted_img_p7_1_375.jpeg",
-        },
-        publishedAt: sanityPost.publishedAt
-          ? new Date(sanityPost.publishedAt).toLocaleDateString("en-US", {
-              month: "long",
-              day: "numeric",
-              year: "numeric",
-            })
-          : "August 1, 2026",
-        content: sanityPost.body,
-        isSanity: true,
-      };
-    }
   } catch (err) {
     console.error("Error fetching Sanity post details:", err);
   }
 
-  if (!post) {
-    notFound();
-  }
+  if (!post) notFound();
 
-  // Fetch related posts (dynamic + static fallback)
-  let relatedPosts: any[] = [];
+  let related: PostSummary[] = [];
   try {
-    const sanityRelated = await client.withConfig({ useCdn: false }).fetch(
-      `*[_type == "post" && slug.current != $slug][0...3] {
-        title,
-        "slug": slug.current,
-        "image": mainImage.asset->url,
-        "category": categories[0]->title,
-        publishedAt
-      }`,
+    related = await client.fetch(
+      `*[_type == "post" && defined(slug.current) && slug.current != $slug] | order(publishedAt desc)[0...3] { ${POST_SUMMARY_FIELDS} }`,
       { slug }
     );
-    if (sanityRelated && sanityRelated.length > 0) {
-      relatedPosts = sanityRelated.map((item: any) => ({
-        title: item.title,
-        slug: item.slug,
-        image: item.image || "/assets/blog_fallback.png",
-        category: item.category || "General",
-        publishedAt: item.publishedAt
-          ? new Date(item.publishedAt).toLocaleDateString("en-US", {
-              month: "long",
-              day: "numeric",
-              year: "numeric",
-            })
-          : "August 1, 2026",
-      }));
-    }
   } catch (err) {
     console.error("Error fetching related posts from Sanity:", err);
   }
 
-  // No static fallback, only show what Sanity returns (up to 3)
+  const author = post.authorName || "Portalis Interiors team";
+  const body = post.body ?? [];
+
+  // "In this article" list from the H2 headings in the body
+  const toc = body
+    .filter((b) => b._type === "block" && b.style === "h2")
+    .map((b) => ({ text: blockText(b), id: slugify(blockText(b)) }))
+    .filter((item) => item.text);
+  const showToc = toc.length >= 2;
+
+  const url = `${SITE_URL}/blog/${post.slug}`;
+  const whatsappHref = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
+    `Hi Portalis, I read "${post.title}" and would like to discuss a fit-out.`
+  )}`;
+
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.title,
+    image: post.image ? [post.image] : undefined,
+    datePublished: post.publishedAt ?? undefined,
+    dateModified: post.updatedAt ?? post.publishedAt ?? undefined,
+    author: post.authorName
+      ? { "@type": "Person", name: post.authorName }
+      : { "@type": "Organization", name: "Portalis Interiors" },
+    publisher: {
+      "@type": "Organization",
+      name: "Portalis Interiors LLC",
+      logo: { "@type": "ImageObject", url: `${SITE_URL}/apple-touch-icon.png` },
+    },
+    mainEntityOfPage: url,
+  };
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+      { "@type": "ListItem", position: 2, name: "Blog", item: `${SITE_URL}/blog` },
+      { "@type": "ListItem", position: 3, name: post.title, item: url },
+    ],
+  };
+
+  const TocList = () => (
+    <ol className="space-y-3 text-sm">
+      {toc.map((item) => (
+        <li key={item.id}>
+          <a
+            href={`#${item.id}`}
+            className="text-charcoal-black/70 leading-snug transition-colors hover:text-forest-green"
+          >
+            {item.text}
+          </a>
+        </li>
+      ))}
+    </ol>
+  );
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+
       <Navbar />
 
-      <main className="min-h-screen bg-light-cream text-charcoal-black font-body pt-28 pb-20">
-        <article className="max-w-4xl mx-auto px-6">
+      <main className="min-h-screen bg-light-cream text-charcoal-black font-body pt-28 md:pt-32 pb-24">
+        <article>
+          {/* ── Header ── */}
+          <header className="px-6 md:px-12 max-w-4xl mx-auto">
+            <nav aria-label="Breadcrumb">
+              <ol className="flex items-center gap-2 text-xs text-charcoal-black/60">
+                <li>
+                  <Link href="/" className="hover:text-forest-green transition-colors">
+                    Home
+                  </Link>
+                </li>
+                <li aria-hidden="true">/</li>
+                <li>
+                  <Link href="/blog" className="hover:text-forest-green transition-colors">
+                    Blog
+                  </Link>
+                </li>
+              </ol>
+            </nav>
 
-          {/* Back button */}
-          <div className="mb-8">
-            <Link
-              href="/blog"
-              className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.25em] text-forest-green/60 hover:text-warm-gold transition-colors duration-300 font-medium w-fit"
-            >
-              <ChevronLeft size={12} /> Back to Blog
-            </Link>
-          </div>
+            <h1 className="mt-6 font-heading text-3xl sm:text-4xl md:text-5xl text-forest-green leading-[1.15]">
+              {post.title}
+            </h1>
 
-          {/* Category Badge */}
-          <span className="text-warm-gold text-[10px] sm:text-xs uppercase tracking-[0.3em] font-semibold block mb-3">
-            {post.category}
-          </span>
-
-          {/* Heading */}
-          <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-forest-green leading-[1.15] mb-6">
-            {post.title}
-          </h1>
-
-          {/* Metadata Block */}
-          <div className="flex flex-wrap items-center gap-6 py-5 border-y border-forest-green/10 mb-10 text-[11px] sm:text-xs text-charcoal-black/70 font-medium">
-            <div className="flex items-center gap-2">
-              <span className="w-6 h-6 rounded-full bg-forest-green text-warm-gold flex items-center justify-center font-bold text-[9px] border border-warm-gold/20 shadow-sm">
-                {post.author.name.charAt(0)}
-              </span>
-              <span>By {post.author.name}</span>
+            <div className="mt-6 border-y border-forest-green/10 py-4">
+              <PostMeta
+                category={post.category}
+                publishedAt={post.publishedAt}
+                text={post.text}
+                author={author}
+              />
             </div>
+          </header>
 
-            <div className="flex items-center gap-1.5">
-              <Calendar size={13} className="text-warm-gold" />
-              <span>Published on {post.publishedAt}</span>
+          {/* ── Cover image ── */}
+          <div className="px-6 md:px-12 max-w-6xl mx-auto mt-10">
+            <div className="relative aspect-[16/9] overflow-hidden rounded-md bg-forest-green/5">
+              <Image
+                src={post.image ?? FALLBACK_IMAGE}
+                alt={post.title}
+                fill
+                priority
+                sizes="(max-width: 1280px) 100vw, 1152px"
+                className="object-cover"
+              />
             </div>
           </div>
 
-          {/* Hero Banner Image */}
-          <div className="relative aspect-[16/9] w-full rounded-[24px] overflow-hidden border border-warm-gold/15 shadow-md mb-12">
-            <Image
-              src={post.image}
-              alt={post.title}
-              fill
-              className="object-cover"
-              sizes="(max-width: 1024px) 100vw, 80vw"
-              priority
-            />
-          </div>
-
-          {/* HTML Rich Content Body */}
-          <div className="blog-content-rich max-w-none mb-20">
-            <PortableText value={post.content} components={portableTextComponents} />
-          </div>
-
-          {/* Related Articles Section */}
-          {relatedPosts.length > 0 && (
-            <div className="border-t border-forest-green/10 pt-16 mt-16">
-              <h3 className="font-heading text-2xl sm:text-3xl text-forest-green mb-8">
-                Related Articles
-              </h3>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                {relatedPosts.map((item) => (
-                  <div
-                    key={item.slug}
-                    className="group flex flex-col h-full bg-white border border-warm-gold/15 rounded-[20px] overflow-hidden shadow-sm hover:shadow-md hover:border-warm-gold/45 transition-all duration-300"
-                  >
-                    {/* Card Image */}
-                    <div className="relative aspect-[4/3] w-full overflow-hidden border-b border-warm-gold/10">
-                      <Link href={`/blog/${item.slug}`}>
-                        <Image
-                          src={item.image}
-                          alt={item.title}
-                          fill
-                          className="object-cover group-hover:scale-[1.03] transition-transform duration-700"
-                          sizes="(max-width: 768px) 100vw, 30vw"
-                        />
-                      </Link>
-                      <div className="absolute top-3 left-3 bg-forest-green text-warm-gold text-[8px] uppercase tracking-[0.18em] font-semibold py-1 px-2.5 rounded shadow-sm border border-warm-gold/20">
-                        {item.category}
-                      </div>
-                    </div>
-
-                    {/* Card Content */}
-                    <div className="p-5 flex flex-col flex-1 space-y-3">
-                      <span className="text-[9px] text-charcoal-black/50 font-medium block">
-                        {item.publishedAt}
-                      </span>
-
-                      <Link href={`/blog/${item.slug}`} className="flex-1">
-                        <h4 className="font-heading text-base text-forest-green leading-snug group-hover:text-warm-gold transition-colors duration-300 line-clamp-2">
-                          {item.title}
-                        </h4>
-                      </Link>
-
-                      <Link
-                        href={`/blog/${item.slug}`}
-                        className="inline-flex items-center gap-1 text-[9px] uppercase tracking-[0.2em] font-semibold text-warm-gold group-hover:text-forest-green transition-colors duration-300 pt-2 border-t border-forest-green/5 w-fit"
-                      >
-                        Read Post <ArrowRight size={10} className="group-hover:translate-x-1 transition-transform duration-300" />
-                      </Link>
-                    </div>
+          {/* ── Body + contents ── */}
+          <div className="px-6 md:px-12 max-w-6xl mx-auto mt-12 lg:mt-16 grid lg:grid-cols-12 gap-10">
+            {showToc && (
+              <aside className="lg:col-span-3">
+                {/* Mobile: tap to open */}
+                <details className="lg:hidden rounded-md border border-forest-green/15 bg-white px-5 py-4">
+                  <summary className="cursor-pointer text-sm font-semibold text-forest-green">
+                    In this article
+                  </summary>
+                  <div className="mt-4">
+                    <TocList />
                   </div>
-                ))}
-              </div>
-            </div>
-          )}
+                </details>
 
+                {/* Desktop: sticky list */}
+                <nav aria-label="In this article" className="hidden lg:block lg:sticky lg:top-28">
+                  <p className="text-sm font-semibold text-forest-green mb-4">
+                    In this article
+                  </p>
+                  <TocList />
+                </nav>
+              </aside>
+            )}
+
+            <div
+              className={
+                showToc ? "lg:col-span-8 lg:col-start-5" : "lg:col-span-8 lg:col-start-3"
+              }
+            >
+              <div className="blog-content-rich max-w-[68ch]">
+                <PortableText value={body as any} components={portableTextComponents as any} />
+              </div>
+
+              {/* ── Enquiry box ── */}
+              <aside className="mt-16 rounded-md bg-forest-green px-6 py-8 sm:px-10 sm:py-10 text-white">
+                <h2 className="font-heading text-2xl sm:text-3xl leading-tight">
+                  Planning a fit-out?
+                </h2>
+                <p className="mt-3 max-w-md text-[15px] leading-relaxed text-white/80">
+                  Tell us about your space and we&apos;ll arrange a consultation.
+                </p>
+                <div className="mt-6 flex flex-wrap gap-3">
+                  <a
+                    href={whatsappHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center rounded-full bg-warm-gold px-6 py-3 text-xs font-semibold text-white transition-colors hover:bg-white hover:text-forest-green"
+                  >
+                    WhatsApp us
+                  </a>
+                  <Link
+                    href="/#contact"
+                    className="inline-flex items-center rounded-full border border-white/40 px-6 py-3 text-xs font-semibold text-white transition-colors hover:border-white hover:bg-white hover:text-forest-green"
+                  >
+                    Book consultation
+                  </Link>
+                </div>
+              </aside>
+            </div>
+          </div>
         </article>
+
+        {/* ── Related articles ── */}
+        {related.length > 0 && (
+          <section className="px-6 md:px-12 max-w-6xl mx-auto mt-24 border-t border-forest-green/10 pt-16">
+            <div className="flex items-end justify-between gap-6">
+              <h2 className="font-heading text-2xl md:text-3xl text-forest-green">
+                Related articles
+              </h2>
+              <Link
+                href="/blog"
+                className="shrink-0 text-sm font-semibold text-forest-green hover:text-warm-gold transition-colors"
+              >
+                All articles
+              </Link>
+            </div>
+            <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12">
+              {related.map((item) => (
+                <PostCard key={item.slug} post={item} />
+              ))}
+            </div>
+          </section>
+        )}
       </main>
 
       <Footer />

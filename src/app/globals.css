@@ -44,7 +44,7 @@ body {
   background-color: var(--color-light-cream);
   color: var(--color-charcoal-black);
   font-family: var(--font-body), sans-serif;
-  overflow-x: hidden;
+  overflow-x: clip;
   scroll-behavior: auto !important; /* Managed by Lenis */
 }
 

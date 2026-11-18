@@ -1,9 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import {
+  AnimatePresence,
+  motion,
+  useMotionValueEvent,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+} from "framer-motion";
+import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
 
 const SERVICES = [
   {
@@ -56,120 +64,192 @@ const SERVICES = [
   },
 ];
 
+const EASE = [0.16, 1, 0.3, 1] as const;
+const CURTAIN = [0.76, 0, 0.24, 1] as const;
+const pad = (n: number) => String(n).padStart(2, "0");
+const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));
+
 export default function ServicesGridSection() {
-  const [active, setActive] = useState(0);
   const reduceMotion = useReducedMotion();
+  const total = SERVICES.length;
+  const steps = total - 1;
+
+  const trackRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: trackRef,
+    offset: ["start start", "end end"],
+  });
+  const position = useTransform(scrollYProgress, (v) => v * steps);
+
+  const [active, setActive] = useState(0);
+  useMotionValueEvent(position, "change", (v) => {
+    if (reduceMotion) return;
+    const next = clamp(Math.round(v), 0, steps);
+    setActive((prev) => (prev === next ? prev : next));
+  });
+
+  const goTo = (i: number) => {
+    const target = clamp(i, 0, steps);
+    if (reduceMotion) {
+      setActive(target);
+      return;
+    }
+    const el = trackRef.current;
+    if (!el) return;
+    const top = el.getBoundingClientRect().top + window.scrollY;
+    const distance = el.offsetHeight - window.innerHeight;
+    window.scrollTo({ top: top + (target / steps) * distance + 2, behavior: "smooth" });
+  };
+
+  const current = SERVICES[active];
+  const progress = reduceMotion ? active / steps : undefined;
 
   return (
-    <section id="services" className="bg-forest-green text-light-cream py-20 md:py-24 px-5 md:px-12">
-      <div className="max-w-6xl mx-auto">
+    <section id="services" aria-label="Our expertise" className="bg-forest-green text-light-cream">
+      <div
+        ref={trackRef}
+        className="relative"
+        style={reduceMotion ? undefined : { height: `${total * 60 + 40}vh` }}
+      >
+        <div
+          className={`${
+            reduceMotion ? "relative py-20" : "sticky top-0 h-[100svh]"
+          } overflow-hidden flex flex-col px-5 md:px-12 pt-24 md:pt-28 pb-6 md:pb-8`}
+        >
+          <div className="mx-auto flex h-full w-full max-w-7xl flex-col">
 
-        {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10 md:mb-14">
-          <div>
-            <h2 className="font-heading text-[2rem] sm:text-4xl lg:text-[2.75rem] leading-[1.1]">
-              Our expertise
-            </h2>
-            <p className="mt-4 max-w-[46ch] text-[15px] leading-[1.7] text-light-cream/75">
-              We fit out restaurants, shops and offices across the UAE, and handle every stage
-              in between so you deal with one team.
-            </p>
-          </div>
-          <Link
-            href="/services"
-            className="self-start md:self-auto shrink-0 text-sm font-semibold underline decoration-warm-gold decoration-2 underline-offset-[6px] hover:text-warm-gold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-warm-gold"
-          >
-            See all services
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
-
-          {/* Service list — names appear one after another, once */}
-          <ul className="lg:col-span-6 border-t border-light-cream/15 lg:border-t-0">
-            {SERVICES.map((s, i) => {
-              const isActive = i === active;
-              return (
-                <motion.li
-                  key={s.id}
-                  className="border-b border-light-cream/15 lg:border-b-0"
-                  initial={reduceMotion ? false : { opacity: 0, y: 14 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.3 }}
-                  transition={{ duration: 0.5, delay: i * 0.05, ease: [0.22, 1, 0.36, 1] }}
-                >
-                  <Link
-                    href={`/services/${s.id}`}
-                    onMouseEnter={() => setActive(i)}
-                    onFocus={() => setActive(i)}
-                    className="group flex items-center gap-4 py-4 lg:py-2.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-warm-gold"
-                  >
-                    {/* Phone: small thumbnail */}
-                    <span className="relative w-20 h-14 shrink-0 overflow-hidden lg:hidden">
-                      <Image src={s.image} alt="" fill className="object-cover" sizes="80px" />
-                    </span>
-
-                    {/* Desktop: gold marker slides out for the active service */}
-                    <span
-                      aria-hidden="true"
-                      className={`hidden lg:block h-[2px] shrink-0 bg-warm-gold transition-all duration-500 ease-out motion-reduce:transition-none ${
-                        isActive ? "w-8" : "w-0"
-                      }`}
-                    />
-
-                    <span className="flex flex-col">
-                      <span
-                        className={`font-heading text-lg sm:text-xl lg:text-[1.9rem] leading-tight transition-colors duration-500 ${
-                          isActive ? "lg:text-light-cream" : "lg:text-light-cream/45"
-                        } group-hover:text-light-cream`}
-                      >
-                        {s.name}
-                      </span>
-                      {/* Phone: one line under the name */}
-                      <span className="mt-1 text-[13px] leading-snug text-light-cream/70 lg:hidden">
-                        {s.line}
-                      </span>
-                    </span>
-                  </Link>
-                </motion.li>
-              );
-            })}
-          </ul>
-
-          {/* Desktop: large photo — fades in and settles from a slight zoom */}
-          <div className="hidden lg:block lg:col-span-6 lg:sticky lg:top-28">
-            <div className="relative aspect-[4/3] overflow-hidden">
-              {SERVICES.map((s, i) => (
-                <Image
-                  key={s.id}
-                  src={s.image}
-                  alt={i === active ? s.name : ""}
-                  fill
-                  className={`object-cover transition-[opacity,transform] duration-700 ease-out motion-reduce:transition-none ${
-                    i === active ? "opacity-100 scale-100" : "opacity-0 scale-[1.06] motion-reduce:scale-100"
-                  }`}
-                  sizes="45vw"
-                />
-              ))}
+            {/* Header */}
+            <div className="flex items-start justify-between gap-6">
+              <h2 className="text-sm font-semibold text-warm-gold">Our expertise</h2>
+              <Link
+                href="/services"
+                className="text-sm font-semibold underline decoration-warm-gold decoration-2 underline-offset-[6px] hover:text-warm-gold transition-colors"
+              >
+                See all services
+              </Link>
             </div>
 
-            {/* Description fades up when the service changes */}
-            <div className="mt-4 min-h-[3rem]">
-              <AnimatePresence mode="wait">
+            {/* Huge service name — slides up and swaps */}
+            <div className="mt-4 md:mt-6 overflow-hidden text-center">
+              <AnimatePresence mode="wait" initial={false}>
                 <motion.p
-                  key={active}
-                  className="text-[15px] leading-relaxed text-light-cream/80"
-                  initial={reduceMotion ? false : { opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={reduceMotion ? undefined : { opacity: 0, y: -4 }}
-                  transition={{ duration: 0.3, ease: "easeOut" }}
+                  key={current.id}
+                  aria-live="polite"
+                  className="font-heading leading-[0.95] tracking-[-0.03em] text-[clamp(2.4rem,10vw,7.5rem)] md:text-[clamp(3rem,7vw,7.5rem)]"
+                  initial={reduceMotion ? false : { y: "105%" }}
+                  animate={{ y: "0%" }}
+                  exit={reduceMotion ? undefined : { y: "-105%" }}
+                  transition={{ duration: 0.6, ease: EASE }}
                 >
-                  {SERVICES[active].line}
+                  {current.name}
                 </motion.p>
               </AnimatePresence>
             </div>
-          </div>
 
+            {/* Centre photo — each new one wipes up over the last */}
+            <div className="relative mx-auto mt-5 md:mt-8 w-[84vw] max-w-[620px] md:w-[38vw] aspect-[16/10] max-h-[32svh] md:max-h-[36svh] overflow-hidden">
+              {SERVICES.map((s, i) => (
+                <motion.div
+                  key={s.id}
+                  className="absolute inset-0"
+                  style={{ zIndex: i }}
+                  initial={false}
+                  animate={{
+                    clipPath: i <= active ? "inset(0% 0% 0% 0%)" : "inset(100% 0% 0% 0%)",
+                  }}
+                  transition={{ duration: reduceMotion ? 0 : 0.9, ease: CURTAIN }}
+                >
+                  <Image
+                    src={s.image}
+                    alt={i === active ? s.name : ""}
+                    fill
+                    sizes="(max-width: 767px) 84vw, 38vw"
+                    className="object-cover"
+                  />
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Counter + progress + arrows */}
+            <div className="mx-auto mt-5 flex w-full max-w-[620px] items-center gap-4">
+              <button
+                type="button"
+                onClick={() => goTo(active - 1)}
+                disabled={active === 0}
+                aria-label="Previous service"
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-light-cream/30 transition-colors hover:bg-light-cream hover:text-forest-green disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-light-cream"
+              >
+                <ArrowLeft size={15} />
+              </button>
+              <span className="text-xs tabular-nums text-light-cream/80">{pad(active + 1)}</span>
+              <div className="h-px flex-1 bg-light-cream/20">
+                <motion.div
+                  className="h-px origin-left bg-warm-gold"
+                  style={reduceMotion ? { scaleX: progress } : { scaleX: scrollYProgress }}
+                />
+              </div>
+              <span className="text-xs tabular-nums text-light-cream/50">{pad(total)}</span>
+              <button
+                type="button"
+                onClick={() => goTo(active + 1)}
+                disabled={active === steps}
+                aria-label="Next service"
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-light-cream/30 transition-colors hover:bg-light-cream hover:text-forest-green disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-light-cream"
+              >
+                <ArrowRight size={15} />
+              </button>
+            </div>
+
+            {/* Description + link */}
+            <div className="mx-auto mt-4 md:mt-5 flex min-h-[4.5rem] max-w-[46ch] flex-col items-center text-center">
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.div
+                  key={current.id}
+                  className="flex flex-col items-center"
+                  initial={reduceMotion ? false : { opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={reduceMotion ? undefined : { opacity: 0, y: -6 }}
+                  transition={{ duration: 0.35, ease: "easeOut" }}
+                >
+                  <p className="text-[14px] md:text-[15px] leading-relaxed text-light-cream/80">
+                    {current.line}
+                  </p>
+                  <Link
+                    href={`/services/${current.id}`}
+                    className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-warm-gold hover:text-light-cream transition-colors"
+                  >
+                    Explore service <ArrowUpRight size={13} />
+                  </Link>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+
+            {/* All services as tabs */}
+            <nav
+              aria-label="Services"
+              className="mt-auto -mx-5 md:mx-0 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            >
+              <ul className="flex w-max md:w-full gap-5 md:gap-0 md:justify-between border-t border-light-cream/15 px-5 md:px-0 pt-4">
+                {SERVICES.map((s, i) => (
+                  <li key={s.id}>
+                    <button
+                      type="button"
+                      onClick={() => goTo(i)}
+                      aria-current={i === active ? "true" : undefined}
+                      className={`whitespace-nowrap text-[12px] md:text-[13px] transition-colors ${
+                        i === active
+                          ? "text-warm-gold font-semibold"
+                          : "text-light-cream/55 hover:text-light-cream"
+                      }`}
+                    >
+                      {s.name}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+
+          </div>
         </div>
       </div>
     </section>
