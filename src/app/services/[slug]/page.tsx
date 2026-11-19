@@ -17,10 +17,12 @@ import {
   ClipboardList,
   Hammer,
   Sparkles,
+  Plus,
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { SERVICES_DETAILS, SERVICE_SLUGS } from "@/constants/services";
+import { SERVICE_FAQS } from "@/constants/serviceFaqs";
 
 /* ───────────────────────── Helpers ───────────────────────── */
 
@@ -85,8 +87,30 @@ export default async function ServicePage({ params }: PageProps) {
   const whatsappUrl = `https://wa.me/971555222074?text=${encodedText}`;
   const mailtoUrl = `mailto:info@portalis.ae?subject=${subject}&body=${encodedText}`;
 
+  /* FAQs + structured data for Google and AI tools */
+  const faqs = SERVICE_FAQS[slug] ?? [];
+  const faqSchema =
+    faqs.length > 0
+      ? {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: faqs.map((f) => ({
+            "@type": "Question",
+            name: f.q,
+            acceptedAnswer: { "@type": "Answer", text: f.a },
+          })),
+        }
+      : null;
+
   return (
     <>
+      {faqSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        />
+      )}
+
       <Navbar />
 
       <main className="min-h-screen bg-light-cream text-charcoal-black font-body">
@@ -236,6 +260,44 @@ export default async function ServicePage({ params }: PageProps) {
             </div>
           </div>
         </section>
+
+        {/* ════════════════════════════════════════════════════════
+            SECTION 4 — FREQUENTLY ASKED QUESTIONS
+        ════════════════════════════════════════════════════════ */}
+        {faqs.length > 0 && (
+          <section className="bg-white py-20 px-6 md:px-12 border-b border-forest-green/8">
+            <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+
+              {/* Left: Title */}
+              <div className="lg:col-span-4">
+                <h2 className="font-heading text-3xl sm:text-4xl text-forest-green leading-tight">
+                  Frequently Asked Questions
+                </h2>
+                <div className="h-[2px] w-10 bg-warm-gold/60 mt-4" />
+              </div>
+
+              {/* Right: Questions (tap to open) */}
+              <div className="lg:col-span-8 border-t border-forest-green/10">
+                {faqs.map((f) => (
+                  <details key={f.q} className="group border-b border-forest-green/10 py-5">
+                    <summary className="flex cursor-pointer list-none items-start justify-between gap-6 [&::-webkit-details-marker]:hidden">
+                      <h3 className="font-heading text-lg sm:text-xl text-forest-green leading-snug">
+                        {f.q}
+                      </h3>
+                      <Plus
+                        size={18}
+                        className="mt-1 shrink-0 text-warm-gold transition-transform duration-300 group-open:rotate-45"
+                      />
+                    </summary>
+                    <p className="mt-3 max-w-[65ch] text-sm leading-relaxed text-charcoal-black/80">
+                      {f.a}
+                    </p>
+                  </details>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
 
         {/* ════════════════════════════════════════════════════════
             SECTION 5 — CTA BANNER (Full Width)
