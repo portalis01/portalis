@@ -56,11 +56,15 @@ export const metadata: Metadata = {
   manifest: "/site.webmanifest",
 };
 
-/* Business details for Google (local search & Maps) */
+/* Business details for Google and AI tools (local search, Maps, AI answers) */
 const businessSchema = {
   "@context": "https://schema.org",
   "@type": "GeneralContractor",
+  "@id": `${SITE_URL}/#organization`,
   name: "Portalis Interiors LLC",
+  alternateName: ["Portalis Interiors", "Portalis"],
+  description:
+    "Interior fit-out company based in Ajman, UAE. Design, approvals, MEP and joinery for restaurants, cafés, retail and offices.",
   url: SITE_URL,
   logo: `${SITE_URL}/apple-touch-icon.png`,
   image: `${SITE_URL}${SHARE_IMAGE}`,
@@ -73,6 +77,22 @@ const businessSchema = {
     addressCountry: "AE",
   },
   areaServed: { "@type": "Country", name: "United Arab Emirates" },
+  sameAs: [
+    "https://www.instagram.com/portalis.ae",
+    "https://www.facebook.com/profile.php?id=61591353571001",
+  ],
+  knowsAbout: [
+    "Interior fit-out",
+    "Restaurant fit-out",
+    "Café fit-out",
+    "Retail fit-out",
+    "Office fit-out",
+    "Design development",
+    "Turnkey projects",
+    "MEP systems",
+    "Joinery",
+    "Authority approvals",
+  ],
   openingHoursSpecification: [
     {
       "@type": "OpeningHoursSpecification",
@@ -81,6 +101,17 @@ const businessSchema = {
       closes: "18:00",
     },
   ],
+};
+
+/* Website name for Google (helps show "Portalis Interiors" as the site name) */
+const websiteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": `${SITE_URL}/#website`,
+  name: "Portalis Interiors",
+  alternateName: ["Portalis", "portalis.ae"],
+  url: SITE_URL,
+  publisher: { "@id": `${SITE_URL}/#organization` },
 };
 
 export default function RootLayout({
@@ -97,6 +128,10 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(businessSchema) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
         />
         <LenisProvider>
           {children}

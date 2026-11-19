@@ -4,10 +4,6 @@ const STATS = [
     label: "Years of experience",
   },
   {
-    big: "Guinness World Record",
-    label: "Holder for milestone achievements in design & execution excellence.",
-  },
-  {
     big: "200+",
     label: "Projects delivered",
   },
@@ -16,7 +12,7 @@ const STATS = [
 export default function ExperienceSection() {
   return (
     <section className="bg-forest-green text-light-cream py-14 md:py-16 px-5 md:px-12">
-      <dl className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-0">
+      <dl className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-0">
         {STATS.map((s, i) => (
           <div
             key={s.big}

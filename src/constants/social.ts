@@ -16,7 +16,7 @@ export const SOCIAL_LINKS = {
   },
   linkedin: {
     name: "LinkedIn",
-    href: "https://linkedin.com",
+    href: "https://www.linkedin.com/company/portalis-interiors-llc/",
     ariaLabel: "LinkedIn",
   },
 } as const;

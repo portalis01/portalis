@@ -6,7 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="c47532cc-f2f5-4aa6-aa09-f8766e7056fa" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/sections/home/ServicesGridSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/sections/home/ServicesGridSection.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,7 +55,7 @@
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "python.packages.toolwindow.project.migrated.to.right.top.v2": "true",
-    "ts.external.directory.path": "/Users/gatewaysm/portalis/node_modules/typescript/lib"
+    "ts.external.directory.path": "/Applications/PyCharm.app/Contents/plugins/javascript-plugin/jsLanguageServicesImpl/external"
   }
 }]]></component>
   <component name="RunManager" selected="npm.Next.js: server-side">
@@ -115,7 +114,8 @@
       <updated>1794902941044</updated>
       <workItem from="1794902942209" duration="2491000" />
       <workItem from="1794919465404" duration="6577000" />
-      <workItem from="1794980795384" duration="16546000" />
+      <workItem from="1794980795384" duration="17877000" />
+      <workItem from="1795066317762" duration="6470000" />
     </task>
     <servers />
   </component>

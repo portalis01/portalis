@@ -63,32 +63,32 @@ export default async function BlogListingPage() {
             >
               <Link
                 href={`/blog/${featured.slug}`}
-                className="group grid lg:grid-cols-12 gap-8 lg:gap-14 items-center"
+                className="group grid lg:grid-cols-2 gap-8 lg:gap-14 items-center"
               >
-                <div className="relative lg:col-span-7 aspect-[4/3] overflow-hidden rounded-md bg-forest-green/5">
+                <div className="relative aspect-[16/10] overflow-hidden rounded-md bg-forest-green/5">
                   <Image
                     src={featured.image ?? FALLBACK_IMAGE}
                     alt=""
                     fill
                     priority
-                    sizes="(max-width: 1024px) 100vw, 58vw"
+                    sizes="(max-width: 1024px) 100vw, 50vw"
                     className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
                   />
                 </div>
 
-                <div className="lg:col-span-5">
+                <div>
                   <PostMeta
                     category={featured.category}
                     publishedAt={featured.publishedAt}
                     text={featured.text}
                   />
-                  <h2 className="mt-4 font-heading text-3xl md:text-4xl text-forest-green leading-tight transition-colors duration-300 group-hover:text-warm-gold">
+                  <h2 className="mt-4 font-heading text-2xl md:text-3xl lg:text-[2.1rem] text-forest-green leading-tight transition-colors duration-300 group-hover:text-warm-gold">
                     {featured.title}
                   </h2>
                   <p className="mt-4 text-[15px] leading-relaxed text-charcoal-black/70">
-                    {getExcerpt(featured.text, 220)}
+                    {getExcerpt(featured.text, 200)}
                   </p>
-                  <span className="mt-8 inline-flex items-center rounded-full bg-forest-green px-6 py-3 text-xs font-semibold text-white transition-colors duration-300 group-hover:bg-warm-gold">
+                  <span className="mt-7 inline-flex items-center rounded-full bg-forest-green px-6 py-3 text-xs font-semibold text-white transition-colors duration-300 group-hover:bg-warm-gold">
                     Read article
                   </span>
                 </div>
