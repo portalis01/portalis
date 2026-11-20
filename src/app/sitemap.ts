@@ -5,7 +5,7 @@ import { client } from "@/sanity/lib/client";
 
 const SITE_URL = "https://portalis.ae";
 
-export const revalidate = 3600;
+export const revalidate = 300;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
