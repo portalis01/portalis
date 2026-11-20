@@ -5,7 +5,7 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
     id: 1,
     title: "Shade (Citywalk)",
     category: "Hospitality",
-    src: "/projects/shade-citywalk/img1.webp",
+    src: "/projects/shade-citywalk/img2.webp",
     images: [
       "/projects/shade-citywalk/img1.webp",
       "/projects/shade-citywalk/img2.webp",
@@ -19,7 +19,7 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
     id: 2,
     title: "La Brioche",
     category: "Hospitality",
-    src: "/projects/labrioche-waters-edge/DSC_00000.webp",
+    src: "/projects/labrioche-waters-edge/DSC_0018.webp",
     images: [
       "/projects/labrioche-waters-edge/DSC_00000.webp",
       "/projects/labrioche-waters-edge/DSC_0004.webp",
@@ -33,7 +33,7 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
     id: 3,
     title: "Turtle Cove Cafe (Saadiyat Island)",
     category: "Hospitality",
-    src: "/projects/turtle-cove-cafe/DSC_0377.webp",
+    src: "/projects/turtle-cove-cafe/DSC_0393.webp",
     images: [
       "/projects/turtle-cove-cafe/DSC_0377.webp",
       "/projects/turtle-cove-cafe/DSC_0384.webp",
@@ -47,7 +47,7 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
     id: 4,
     title: "Vapiano (ZCC)",
     category: "Hospitality",
-    src: "/projects/vapiano-zcc/IMG_0081.webp",
+    src: "/projects/vapiano-zcc/IMG_0084.webp",
     images: [
       "/projects/vapiano-zcc/IMG_0081.webp",
       "/projects/vapiano-zcc/IMG_0082.webp",
@@ -61,7 +61,7 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
     id: 5,
     title: "Domino's (Makani Mall)",
     category: "Hospitality",
-    src: "/projects/dominos-makani-mall/DSC_0001-01.webp",
+    src: "/projects/dominos-makani-mall/DSC_0024-02.webp",
     images: [
       "/projects/dominos-makani-mall/DSC_0001-01.webp",
       "/projects/dominos-makani-mall/DSC_0020-01.webp",
